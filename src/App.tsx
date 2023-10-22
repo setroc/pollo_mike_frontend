@@ -1,9 +1,12 @@
 import { HomeContainer } from "./containers/"
+import { OrdersProvider } from "./context/OrdersContext"
 
 function App() {
 
   return (
-    <HomeContainer />
+    <OrdersProvider>
+      <HomeContainer />
+    </OrdersProvider>
   )
 }
 
