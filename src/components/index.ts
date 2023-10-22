@@ -1,3 +1,4 @@
 export * from './NavigationBar';
 export * from './ProductCard';
-export * from './SideMenu';
+export * from './OrderDetail';
+export * from './OrderDetailProductItem';

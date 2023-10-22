@@ -1,9 +1,9 @@
-import { Home } from "./containers/Home"
+import { HomeContainer } from "./containers/"
 
 function App() {
 
   return (
-    < Home />
+    <HomeContainer />
   )
 }
 

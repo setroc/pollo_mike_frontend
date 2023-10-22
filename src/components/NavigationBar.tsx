@@ -17,11 +17,17 @@ export const NavigationBar = () => {
         </IconButton>
 
         <Box sx={{ display: { xs: 'none', sm: 'block' }, flexGrow: 1 }}>
-            <Button sx={{ color: 'black' }} >
-              Hola
+            <Button sx={{ color: '' }} >
+              Nuevo pedido
             </Button>
             <Button sx={{ color: 'black' }} >
-              Hola
+              Apartados
+            </Button>
+            <Button sx={{ color: 'black' }} >
+              Ordenes en curso
+            </Button>
+            <Button sx={{ color: 'black' }} >
+              Ordenes  anteriores
             </Button>
         </Box>
 
