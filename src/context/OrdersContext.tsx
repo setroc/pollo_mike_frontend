@@ -17,7 +17,22 @@ export interface OrdersState {
 }
 
 const ORDERS_INITIAL_STATE : OrdersState = {
-  orders: []
+  orders: [
+    {
+      id: 1,
+      clientName: 'Juan Perez',
+      date: '20-10-2023',
+      number: 1,
+      products: [
+        {
+          productId: 1,
+          quantity: 2
+        }
+      ],
+      total: 100,
+      state: 0
+    },
+  ]
 }
 
 interface Props {

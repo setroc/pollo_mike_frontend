@@ -1,2 +1,2 @@
-export * from './HomeContainer';
 export * from './OrderContainer';
+export * from './CurrentOrdersContainer';

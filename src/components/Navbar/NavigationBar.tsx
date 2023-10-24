@@ -1,5 +1,6 @@
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from 'react-router-dom';
 
 export const NavigationBar = () => {
   return (
@@ -18,13 +19,17 @@ export const NavigationBar = () => {
 
         <Box sx={{ display: { xs: 'none', sm: 'block' }, flexGrow: 1 }}>
             <Button sx={{ color: '' }} >
-              Nuevo pedido
+              <Link to='/NewOrder' style={{ textDecoration: 'none', color: 'inherit' }}>
+                Nuevo pedido
+              </Link>
             </Button>
             <Button sx={{ color: 'black' }} >
               Apartados
             </Button>
             <Button sx={{ color: 'black' }} >
-              Ordenes en curso
+              <Link to='/CurrentOrders' style={{ textDecoration: 'none', color: 'inherit' }}>
+                Ordenes en curso
+              </Link>
             </Button>
             <Button sx={{ color: 'black' }} >
               Ordenes  anteriores
