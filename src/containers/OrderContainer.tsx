@@ -1,8 +1,11 @@
 import { Grid } from "@mui/material"
 
 import { OrderDetail, ProductCard } from "../components"
+import { useContext } from "react"
+import { ProductsContext } from "../context/product"
 
 export const OrderContainer = () => {
+  const { products } = useContext(ProductsContext);
   return (
     <Grid container
       sx={{
@@ -26,9 +29,13 @@ export const OrderContainer = () => {
           mt: 0
         }}
       >
-        <Grid item>
-          <ProductCard />
-        </Grid>
+        {
+          products.map( p => (
+            <Grid item key={p.id}>
+              <ProductCard product={p} />
+            </Grid>
+          ))
+        }
       </Grid>
 
       <Grid
