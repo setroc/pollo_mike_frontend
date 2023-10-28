@@ -1,8 +1,9 @@
 import { Button, Container, Divider, FormControl, Grid, InputAdornment, InputLabel, OutlinedInput, Typography } from "@mui/material"
 import { AccountCircle, ConfirmationNumber } from "@mui/icons-material"
-import { OrderDetailProductItem } from "."
+
 
 export const OrderDetail = () => {
+  
   return (
     <Container fixed>
       <Typography sx={{ my: 2 }} variant='h5'>
@@ -48,12 +49,13 @@ export const OrderDetail = () => {
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid item xs={12} >
-          <OrderDetailProductItem />
-        </Grid>
-        <Grid item xs={12} >
-          <OrderDetailProductItem />
-        </Grid>
+        {/* {
+          productsInNewOrder.map( p => (
+            <Grid item xs={12} key={p.id}>
+              <OrderDetailProductItem />
+            </Grid>
+          ))
+        } */}
       </Grid>
 
       <Typography variant='h6' fontWeight='normal' sx={{ my: 2 }}>

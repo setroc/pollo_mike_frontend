@@ -1,11 +1,14 @@
-import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material"
-import { IProduct } from "../interfaces"
 import { FC } from "react"
+import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material"
+
+import { IProduct } from "../../interfaces"
 
 interface Props {
   product: IProduct
 }
+
 export const ProductCard : FC<Props> = ({ product }) => {
+
   return (
     <Card sx={{ maxWidth: 200 }}>
       <CardActionArea>
