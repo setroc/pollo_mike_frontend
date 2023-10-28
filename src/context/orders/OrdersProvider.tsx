@@ -1,17 +1,9 @@
-import { FC, createContext, useReducer } from 'react';
+import { FC, useReducer } from "react";
 
-import { IOrder } from '../interfaces';
+import { OrdersContext, ordersReducer } from './';
 
-// CONTEXT
-interface ContextProps {
-  orders: IOrder[];
-  
-  // methods
-  addOrder: (order: IOrder) => void;
-}
-export const OrdersContext = createContext({} as ContextProps);
+import { IOrder } from "../../interfaces";
 
-// PROVIDER
 export interface OrdersState {
   orders: IOrder[];
 }
@@ -56,19 +48,4 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       {children}
     </OrdersContext.Provider>
   )
-}
-
-// REDUCER
-type OrdersActionType = 
-  | { type: '[Orders] Add new order', payload: IOrder }
-
-export const ordersReducer = (state: OrdersState, action: OrdersActionType) : OrdersState => {
-  switch(action.type) {
-    case '[Orders] Add new order': 
-      return {
-        ...state,
-        orders: [...state.orders, action.payload]
-      }
-  }
-
 }

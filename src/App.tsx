@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 
 import { CurrentOrdersContainer, OrderContainer } from "./containers/"
-import { OrdersProvider } from "./context/OrdersContext"
+import { OrdersProvider } from "./context/orders"
 import { ProductsProvider } from "./context/product"
 
 import { MainLayout } from "./layouts"

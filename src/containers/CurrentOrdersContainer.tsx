@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Button, ButtonGroup, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 
-import { OrdersContext } from '../context/OrdersContext';
+import { OrdersContext } from '../context/orders';
 
 export const CurrentOrdersContainer = () => {
   const { orders } = useContext(OrdersContext);
