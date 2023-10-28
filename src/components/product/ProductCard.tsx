@@ -1,16 +1,30 @@
 import { FC } from "react"
 import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material"
 
-import { IProduct } from "../../interfaces"
+import { IProduct, IProductInNewOrder } from "../../interfaces"
 
 interface Props {
-  product: IProduct
+  product: IProduct;
+  setproductsInOrder: React.Dispatch<React.SetStateAction<IProductInNewOrder[]>>
 }
 
-export const ProductCard : FC<Props> = ({ product }) => {
+export const ProductCard : FC<Props> = ({ product, setproductsInOrder }) => {
+
+  const addProductToOrder = () => {
+    setproductsInOrder((ant)=>{
+      const antP = ant.find(p => p.id === product.id);
+      if (!antP) {
+        return [...ant, {...product, quantity: 1}]
+      }
+      return ant.map( p => {
+        if (p.id === product.id) p.quantity++;
+        return p;
+      })
+    });
+  }
 
   return (
-    <Card sx={{ maxWidth: 200 }}>
+    <Card sx={{ maxWidth: 200 }} onClick={addProductToOrder} >
       <CardActionArea>
         <CardMedia 
           component="img"
