@@ -72,6 +72,25 @@ export const OrdersProvider : FC<Props> = ({children}) => {
     }
   }
 
+  const deleteOrder = async (orderId:number) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/orders/delete/${orderId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        dispatch({type: '[Orders] Delete order', payload: orderId});
+        return {ok: true, msg: 'Orden eliminada correctamente.'};
+      } else {
+        const body = await res.json();
+        console.log(body.message);
+        return {ok: false, msg: 'Error al eliminar la orden.'};
+      }
+    } catch ( error ) {
+      console.error(error);
+      return {ok: false, msg: 'Error al eliminar la orden.'};
+    }
+  }
+
   const getOrderById = (id: number) => {
     return state.orders.filter(o=>o.id === id)[0];
   }
@@ -81,9 +100,10 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       ...state,
 
       // methods
-      addOrder,
       getOrderById,
-      updateOrder
+      addOrder,
+      updateOrder,
+      deleteOrder
     }}>
       {children}
     </OrdersContext.Provider>

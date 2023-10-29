@@ -5,6 +5,7 @@ import { IOrder } from "../../interfaces"
 type OrdersActionType = 
   | { type: '[Orders] Add new order', payload: IOrder }
   | { type: '[Orders] Update order', payload: IOrder }
+  | { type: '[Orders] Delete order', payload: number }
   | { type: '[Orders] Load orders', payload: IOrder[] }
 
 export const ordersReducer = (state: OrdersState, action: OrdersActionType) : OrdersState => {
@@ -28,6 +29,11 @@ export const ordersReducer = (state: OrdersState, action: OrdersActionType) : Or
           }
           return o;
         })
+      }
+    case '[Orders] Delete order':
+      return {
+        ...state,
+        orders: state.orders.filter(o=>o.id !== action.payload)
       }
   }
 

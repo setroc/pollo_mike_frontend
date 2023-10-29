@@ -7,7 +7,8 @@ interface ContextProps {
   
   // methods
   addOrder: (order: IOrder) => Promise<{ok: boolean, msg: string}>;
-  getOrderById: (id: number) => IOrder;
   updateOrder: (order: IOrder) => Promise<{ok: boolean, msg: string}>;
+  deleteOrder: (orderId: number) => Promise<{ok: boolean, msg: string}>;
+  getOrderById: (id: number) => IOrder;
 }
 export const OrdersContext = createContext({} as ContextProps);
