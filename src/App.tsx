@@ -15,6 +15,7 @@ function App() {
           <Route path="/" element={<MainLayout />} >
             <Route path="CurrentOrders" element={<CurrentOrdersContainer />} />
             <Route path="NewOrder" element={<OrderContainer />} />
+            <Route path="EditOrder" element={<OrderContainer />} />
           </Route>
         </Routes>
       </OrdersProvider>

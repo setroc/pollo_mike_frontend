@@ -1,11 +1,19 @@
 import { useContext } from 'react';
-import { Button, ButtonGroup, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Button, ButtonGroup, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 
 import { OrdersContext } from '../context/orders';
+import { useNavigate } from 'react-router-dom';
 
 export const CurrentOrdersContainer = () => {
   const { orders } = useContext(OrdersContext);
+  const navigate = useNavigate();
 
+  const editOrder = (id:number) => {
+    navigate({
+      pathname: '/EditOrder',
+      search: `?id=${id}`,
+    });
+  }
   return (
     <Grid container
       alignContent='flex-start'
@@ -35,10 +43,19 @@ export const CurrentOrdersContainer = () => {
                   >
                     <TableCell component="th" scope="row">{o.number}</TableCell>
                     <TableCell align="right">{o.clientName}</TableCell>
-                    <TableCell align="right">{JSON.stringify(o.orderToProduct)}</TableCell>
+                    <TableCell align="right">
+                      {
+                        o.orderToProduct.map(ot=> (
+                          <Typography variant='body2' key={ot.productId}>
+                            {ot.quantity} - {ot.product!.description}
+                          </Typography>
+                        ))
+                      }
+
+                    </TableCell>
                     <TableCell align="right">
                       <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                        <Button>Editar</Button>
+                        <Button onClick={() => editOrder(o.id)}>Editar</Button>
                         <Button color='error'>Eliminar</Button>
                       </ButtonGroup>
                     </TableCell>

@@ -1,6 +1,9 @@
+import { IProduct } from ".";
+
 export interface IOrderProducts {
   productId: number;
   quantity: number;
+  product?: IProduct;
 }
 
 export interface IOrder {

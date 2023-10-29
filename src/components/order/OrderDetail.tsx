@@ -1,9 +1,10 @@
-import { ChangeEvent, FC, useContext, useState } from "react";
+import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
 import { Alert, Button, Container, Divider, FormControl, Grid, InputAdornment, InputLabel, OutlinedInput, Snackbar, Typography } from "@mui/material"
 import { AccountCircle, ConfirmationNumber } from "@mui/icons-material"
 
 import { IProductInNewOrder } from "../../interfaces";
 import { OrdersContext } from "../../context/orders";
+import { useSearchParams } from "react-router-dom";
 
 
 interface detailState {
@@ -14,10 +15,33 @@ interface detailState {
 interface Props {
   children: React.ReactNode;
   productsInOrder: IProductInNewOrder[];
+  setproductsInOrder: React.Dispatch<React.SetStateAction<IProductInNewOrder[]>>
 }
-export const OrderDetail : FC<Props> = ({ children, productsInOrder }) => {
+export const OrderDetail : FC<Props> = ({ children, productsInOrder, setproductsInOrder }) => {
 
-  const { addOrder }  = useContext(OrdersContext);
+  const { addOrder, getOrderById, updateOrder }  = useContext(OrdersContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(()=> {
+    if (searchParams.get('id') === null) return;
+    const order = getOrderById(Number(searchParams.get('id')));
+    const productsInOrder = order.orderToProduct.map( op=> {
+      return  {
+        id: Number(op.product!.id),
+        title: op.product!.title,
+        price: Number(op.product!.price),
+        description: op.product!.description,
+        stepQuantity: Number(op.product!.stepQuantity),
+        quantity: Number(op.quantity)}
+    });
+    setproductsInOrder(productsInOrder);
+    setNewOrderDetail({
+      clientName: order.clientName,
+      number: order.number
+    })
+
+  },[getOrderById,searchParams,setproductsInOrder]);
+
 
   const [newOrderDetail, setNewOrderDetail] = useState<detailState>({
     clientName: '',
@@ -30,27 +54,39 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder }) => {
     setNewOrderDetail({...newOrderDetail, [e.target.id]: e.target.value});
   }
 
-  const createOrder = async () => {
+  const createUptdateOrden = async () => {
     const products = productsInOrder.map( (p) => {
       return {
         productId: p.id,
         quantity: p.quantity
       }
     });
-    const fecha = new Date();
-    const dia = String(fecha.getDate()).padStart(2, '0'); // Obtiene el día y lo rellena con 0 si es necesario
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // El mes está basado en 0, por lo que sumamos 1
-    const anio = fecha.getFullYear();
-    const { ok, msg } = await addOrder({
-      clientName: newOrderDetail.clientName,
-      number: Number(newOrderDetail.number),
-      id: 0,
-      total: productsInOrder.reduce((a,b)=> a + (b.quantity*b.price),0),
-      date: `${anio}-${mes}-${dia}`,
-      state: 0,
-      orderToProduct: products
-    });
-    setResponse({ok, msg, open: true});
+    if (searchParams.get('id') === null) { // create
+      const fecha = new Date();
+      const dia = String(fecha.getDate()).padStart(2, '0'); // Obtiene el día y lo rellena con 0 si es necesario
+      const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // El mes está basado en 0, por lo que sumamos 1
+      const anio = fecha.getFullYear();
+      const { ok, msg } = await addOrder({
+        clientName: newOrderDetail.clientName,
+        number: Number(newOrderDetail.number),
+        id: 0,
+        total: productsInOrder.reduce((a,b)=> a + (b.quantity*b.price),0),
+        date: `${anio}-${mes}-${dia}`,
+        state: 0,
+        orderToProduct: products
+      });
+      setResponse({ok, msg, open: true});
+    } else { // update
+      const order = getOrderById(Number(searchParams.get('id')));
+      const {ok, msg} = await updateOrder({
+        ...order,
+        clientName: newOrderDetail.clientName,
+        number: Number(newOrderDetail.number),
+        total: productsInOrder.reduce((a,b)=> a + (b.quantity*b.price),0),
+        orderToProduct: products
+      });
+      setResponse({ok, msg, open: true});
+    }
   }
 
   const handleCloseSnackbar = () => {
@@ -98,6 +134,7 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder }) => {
                 size="small"
                 id="number"
                 onChange={handleInputChange}
+                value={newOrderDetail.number}
                 startAdornment={
                   <InputAdornment position="start">
                     <ConfirmationNumber />
@@ -157,8 +194,10 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder }) => {
 
         </Grid>
 
-        <Button fullWidth variant="contained" size="large" sx={{ my: 2 }} onClick={createOrder}>
-          Agregar orden
+        <Button fullWidth variant="contained" size="large" sx={{ my: 2 }} onClick={createUptdateOrden}>
+          {
+            searchParams.get('id') === null ? 'Agregar orden' : 'Actualizar orden'
+          }
         </Button>
 
       </Container>
