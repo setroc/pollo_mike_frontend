@@ -3,12 +3,9 @@ export interface IProduct {
   title: string;
   price: number;
   description: string;
+  stepQuantity: number;
 }
 
-export interface IProductInNewOrder {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
+export interface IProductInNewOrder extends IProduct {
   quantity: number;
 }

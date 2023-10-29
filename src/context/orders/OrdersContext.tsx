@@ -6,6 +6,6 @@ interface ContextProps {
   orders: IOrder[];
   
   // methods
-  addOrder: (order: IOrder) => void;
+  addOrder: (order: IOrder) => Promise<{ok: boolean, msg: string}>;
 }
 export const OrdersContext = createContext({} as ContextProps);

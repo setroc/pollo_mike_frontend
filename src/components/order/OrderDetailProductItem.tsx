@@ -37,9 +37,9 @@ export const OrderDetailProductItem : FC<Props> = ({productInOrder, setproductsI
           </Typography>
 
           <ButtonGroup variant="outlined" size="large" aria-label="outlined primary button group">
-            <Button onClick={() => updateQuantity(-1)}> - </Button>
+            <Button onClick={() => updateQuantity(Number(productInOrder.stepQuantity)*-1)}> - </Button>
             <Button disabled>{productInOrder.quantity}</Button>
-            <Button onClick={() => updateQuantity(1)}> + </Button>
+            <Button onClick={() => updateQuantity(Number(productInOrder.stepQuantity))}> + </Button>
           </ButtonGroup>
         </Box>
       </Box>

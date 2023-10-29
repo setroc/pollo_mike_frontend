@@ -1,4 +1,4 @@
-import { FC, useReducer } from "react";
+import { FC, useEffect, useReducer } from "react";
 
 import { OrdersContext, ordersReducer } from './';
 
@@ -9,22 +9,7 @@ export interface OrdersState {
 }
 
 const ORDERS_INITIAL_STATE : OrdersState = {
-  orders: [
-    {
-      id: 1,
-      clientName: 'Juan Perez',
-      date: '20-10-2023',
-      number: 1,
-      products: [
-        {
-          productId: 1,
-          quantity: 2
-        }
-      ],
-      total: 100,
-      state: 0
-    },
-  ]
+  orders: []
 }
 
 interface Props {
@@ -33,9 +18,34 @@ interface Props {
 export const OrdersProvider : FC<Props> = ({children}) => {
   const [state, dispatch] = useReducer( ordersReducer, ORDERS_INITIAL_STATE);
 
-  const addOrder = (order : IOrder) => {
+  useEffect(()=> {
+    fetch('http://localhost:3000/api/orders/all')
+    .then(res => res.json())
+    .then(body => dispatch({ type: '[Orders] Load orders', payload: body}))
+  },[])
 
-    return dispatch({ type: '[Orders] Add new order', payload: order });
+  const addOrder = async (order : IOrder) => {
+    try {
+      const res = await fetch('http://localhost:3000/api/orders/register', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+      if (res.ok) {
+        const body : IOrder = await res.json();
+        dispatch({type: '[Orders] Add new order', payload: body});
+        return {ok: true, msg: 'Orden añadida correctamente.'};
+      } else {
+        const body = await res.json();
+        console.log(body.message);
+        return {ok: false, msg: 'Error al añadir la order.'};
+      }
+    } catch ( error ) {
+      console.error(error);
+      return {ok: false, msg: 'Error al añadir la order.'};
+    }
   }
 
   return (

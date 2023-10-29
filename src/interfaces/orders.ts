@@ -10,5 +10,5 @@ export interface IOrder {
   total: number;
   date: string;
   state: number;
-  products: IOrderProducts[]
+  orderToProduct: IOrderProducts[]
 }

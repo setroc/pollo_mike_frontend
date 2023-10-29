@@ -35,7 +35,7 @@ export const CurrentOrdersContainer = () => {
                   >
                     <TableCell component="th" scope="row">{o.number}</TableCell>
                     <TableCell align="right">{o.clientName}</TableCell>
-                    <TableCell align="right">{JSON.stringify(o.products)}</TableCell>
+                    <TableCell align="right">{JSON.stringify(o.orderToProduct)}</TableCell>
                     <TableCell align="right">
                       <ButtonGroup variant="contained" aria-label="outlined primary button group">
                         <Button>Editar</Button>

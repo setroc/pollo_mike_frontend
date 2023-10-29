@@ -47,7 +47,7 @@ export const OrderContainer = () => {
         item
         xs={8} sm={6} lg={4}
       >
-        <OrderDetail>
+        <OrderDetail productsInOrder={productsInOrder} >
           {
             productsInOrder.map(p => (
               <Grid item xs={12} key={p.id}>
