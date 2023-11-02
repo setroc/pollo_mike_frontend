@@ -4,8 +4,10 @@ export interface IProduct {
   price: number;
   description: string;
   stepQuantity: number;
+  type: string;
+  imgName: string;
 }
 
-export interface IProductInNewOrder extends IProduct {
+export interface IProductInOrder extends IProduct {
   quantity: number;
 }

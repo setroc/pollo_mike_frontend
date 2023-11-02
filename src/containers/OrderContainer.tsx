@@ -1,15 +1,24 @@
 import { useContext, useState } from "react"
 import { Grid } from "@mui/material"
 
-import { OrderDetail, OrderDetailProductItem, ProductCard } from "../components"
+import { OrderDetail, ProductCard } from "../components"
 
 import { ProductsContext } from "../context/product"
-import { IProductInNewOrder } from "../interfaces"
+import { IOrder } from "../interfaces"
 
 export const OrderContainer = () => {
+  
   const { products } = useContext(ProductsContext);
 
-  const [productsInOrder, setproductsInOrder] = useState<IProductInNewOrder[]>([])
+  const [currentOrder, setCurrentOrder] = useState<IOrder>({
+    id:0,
+    clientName: '',
+    date: '',
+    number: 0,
+    products: [],
+    state: 0,
+    total: 0
+  });
 
   return (
     <Grid container
@@ -25,37 +34,24 @@ export const OrderContainer = () => {
         justifyContent='center'
         sx={{
           backgroundColor: '#f1f5fe',
-          p:
-            3,
-          overflow:
-            'auto',
-          height:
-            '100%',
+          p: 3,
+          overflow: 'auto',
+          height: '100%',
           mt: 0
         }}
       >
         {
           products.map( p => (
             <Grid item key={p.id}>
-              <ProductCard product={p} setproductsInOrder={setproductsInOrder} />
+              <ProductCard product={p} setCurrentOrder={setCurrentOrder} />
             </Grid>
           ))
         }
       </Grid>
 
-      <Grid
-        item
-        xs={8} sm={6} lg={4}
+      <Grid item xs={8} sm={6} lg={4}
       >
-        <OrderDetail productsInOrder={productsInOrder} setproductsInOrder={setproductsInOrder}>
-          {
-            productsInOrder.map(p => (
-              <Grid item xs={12} key={p.id}>
-                <OrderDetailProductItem productInOrder={p} setproductsInOrder={setproductsInOrder} />
-              </Grid>
-            ))
-          }
-        </OrderDetail>
+        <OrderDetail currentOrder={currentOrder} setCurrentOrder={setCurrentOrder} />
       </Grid>
     </Grid>
   )

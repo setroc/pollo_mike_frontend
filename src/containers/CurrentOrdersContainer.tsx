@@ -55,31 +55,36 @@ export const CurrentOrdersContainer = () => {
               </TableHead>
               <TableBody>
                 {
-                  orders.map(o => (
-                    <TableRow
-                      key={o.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">{o.number}</TableCell>
-                      <TableCell align="right">{o.clientName}</TableCell>
-                      <TableCell align="right">
-                        {
-                          o.orderToProduct.map(ot=> (
-                            <Typography variant='body2' key={ot.productId}>
-                              {ot.quantity} - {ot.product!.description}
-                            </Typography>
-                          ))
-                        }
-
-                      </TableCell>
-                      <TableCell align="right">
-                        <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                          <Button onClick={() => edit(o.id)}>Editar</Button>
-                          <Button color='error' onClick={() => remove(o.id)}>Eliminar</Button>
-                        </ButtonGroup>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  orders.map(o => {
+                      if (o.state === 0) {
+                        return (
+                          <TableRow
+                            key={o.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row">{o.number}</TableCell>
+                            <TableCell align="right">{o.clientName}</TableCell>
+                            <TableCell align="right">
+                              {
+                                o.products.map(p=> (
+                                  <Typography variant='body2' key={p.id}>
+                                    {p.quantity} - {p.title}
+                                  </Typography>
+                                ))
+                              }
+      
+                            </TableCell>
+                            <TableCell align="right">
+                              <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                                <Button onClick={() => edit(o.id)}>Editar</Button>
+                                <Button color='error' onClick={() => remove(o.id)}>Eliminar</Button>
+                              </ButtonGroup>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      }
+                    }
+                  )
                 }
               </TableBody>
             </Table>

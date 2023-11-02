@@ -1,10 +1,4 @@
-import { IProduct } from ".";
-
-export interface IOrderProducts {
-  productId: number;
-  quantity: number;
-  product?: IProduct;
-}
+import { IProductInOrder } from ".";
 
 export interface IOrder {
   id: number;
@@ -13,5 +7,5 @@ export interface IOrder {
   total: number;
   date: string;
   state: number;
-  orderToProduct: IOrderProducts[]
+  products: IProductInOrder[]
 }

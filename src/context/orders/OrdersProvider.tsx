@@ -3,6 +3,7 @@ import { FC, useEffect, useReducer } from "react";
 import { OrdersContext, ordersReducer } from './';
 
 import { IOrder } from "../../interfaces";
+import { getDate } from "../../utils";
 
 export interface OrdersState {
   orders: IOrder[];
@@ -19,7 +20,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
   const [state, dispatch] = useReducer( ordersReducer, ORDERS_INITIAL_STATE);
 
   useEffect(()=> {
-    fetch(`http://localhost:3000/api/orders/all?date=2023-10-28`)
+    fetch(`http://localhost:3000/api/orders/all?date=${getDate()}&state=0`)
     .then(res => res.json())
     .then(body => dispatch({ type: '[Orders] Load orders', payload: body}))
   },[])
@@ -40,11 +41,11 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       } else {
         const body = await res.json();
         console.log(body.message);
-        return {ok: false, msg: 'Error al añadir la order.'};
+        return {ok: false, msg: 'Error al añadir la orden.'};
       }
     } catch ( error ) {
       console.error(error);
-      return {ok: false, msg: 'Error al añadir la order.'};
+      return {ok: false, msg: 'Error al añadir la orden.'};
     }
   }
 
@@ -55,7 +56,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({...order,products:order.orderToProduct}),
+        body: JSON.stringify(order),
       });
       if (res.ok) {
         const body : IOrder = await res.json();

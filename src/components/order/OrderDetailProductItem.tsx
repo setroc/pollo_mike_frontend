@@ -1,21 +1,24 @@
 import { Box, Button, ButtonGroup, Card, CardMedia, Typography } from "@mui/material"
-import { IProductInNewOrder } from "../../interfaces"
+import { IOrder, IProductInOrder } from "../../interfaces"
 import { FC } from "react";
 
 
 interface Props {
-  productInOrder: IProductInNewOrder;
-  setproductsInOrder: React.Dispatch<React.SetStateAction<IProductInNewOrder[]>>
+  productInOrder: IProductInOrder;
+  setCurrentOrder: React.Dispatch<React.SetStateAction<IOrder>>
 }
 
-export const OrderDetailProductItem : FC<Props> = ({productInOrder, setproductsInOrder}) => {
+export const OrderDetailProductItem : FC<Props> = ({productInOrder, setCurrentOrder}) => {
 
   const updateQuantity = (quantity : number) => {
-    setproductsInOrder((ant) => {
-      return ant.map( p => {
-        if (p.id === productInOrder.id && p.quantity + quantity > 0 ) p.quantity += quantity;
-        return p;
-      });
+    setCurrentOrder((ant) => {
+      return {
+        ...ant,
+        products: ant.products.map( p => {
+          if (p.id === productInOrder.id && p.quantity + quantity > 0 ) p.quantity += quantity;
+          return p;
+        })
+      }
     });
   }
 
@@ -24,8 +27,8 @@ export const OrderDetailProductItem : FC<Props> = ({productInOrder, setproductsI
       <CardMedia
         component="img"
         sx={{ width: 110, height: 110, p: 1, objectFit: 'contain' }}
-        image="https://w7.pngwing.com/pngs/203/765/png-transparent-hamburger-with-vegetables-hamburger-slider-hamburger-burger-food-recipe-cheeseburger.png"
-        alt="Burguer"
+        image={`/img/${productInOrder.imgName}`}
+        alt={productInOrder.description}
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, justifyContent: 'space-between', width: '100%' }}>
         <Typography variant='h6'>

@@ -1,25 +1,28 @@
 import { FC } from "react"
 import { Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material"
 
-import { IProduct, IProductInNewOrder } from "../../interfaces"
+import { IOrder, IProduct } from "../../interfaces"
 
 interface Props {
   product: IProduct;
-  setproductsInOrder: React.Dispatch<React.SetStateAction<IProductInNewOrder[]>>
+  setCurrentOrder: React.Dispatch<React.SetStateAction<IOrder>>
 }
 
-export const ProductCard : FC<Props> = ({ product, setproductsInOrder }) => {
+export const ProductCard : FC<Props> = ({ product, setCurrentOrder }) => {
 
   const addProductToOrder = () => {
-    setproductsInOrder((ant)=>{
-      const antP = ant.find(p => p.id === product.id);
-      if (!antP) {
-        return [...ant, {...product, quantity: 1}]
+    setCurrentOrder((ant)=>{
+      const antP = ant.products.find(p => p.id === product.id);
+      if ( !antP ) {
+        return {...ant, products: [...ant.products, {...product, quantity: Number(product.stepQuantity) }] }
       }
-      return ant.map( p => {
-        if (p.id === product.id) p.quantity++;
-        return p;
-      })
+      return {
+        ...ant,
+        products: ant.products.map( p => {
+          if (p.id === product.id) p.quantity += Number(product.stepQuantity);
+          return p;
+        })
+      }
     });
   }
 
@@ -29,17 +32,17 @@ export const ProductCard : FC<Props> = ({ product, setproductsInOrder }) => {
         <CardMedia 
           component="img"
           sx={{ width: 200, margin: '0 auto' }}
-          image="https://w7.pngwing.com/pngs/203/765/png-transparent-hamburger-with-vegetables-hamburger-slider-hamburger-burger-food-recipe-cheeseburger.png"
-          alt="Burguer"
+          image={`/img/${product.imgName}`}
+          alt={product.description}
         />
         <CardContent sx={{ textAlign: 'center' }}>
-          <Typography gutterBottom variant="h5">
+          <Typography gutterBottom variant="h5" fontSize='1.2rem'>
             {product.title}
           </Typography>
-          <Typography gutterBottom variant="body2" textAlign='start'>
+          <Typography gutterBottom variant="body2">
             {product.description}
           </Typography>
-          <Typography variant="subtitle1" color="text">
+          <Typography variant="subtitle1" color="text" >
             $ {product.price}
           </Typography>
         </CardContent>

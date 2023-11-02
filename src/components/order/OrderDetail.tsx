@@ -1,94 +1,80 @@
 import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
-import { Alert, Button, Container, Divider, FormControl, Grid, InputAdornment, InputLabel, OutlinedInput, Snackbar, Typography } from "@mui/material"
+import { useSearchParams } from "react-router-dom";
+import { Alert, Button, Container, FormControl, FormControlLabel, Grid, InputAdornment, InputLabel, OutlinedInput, Snackbar, Switch, Typography } from "@mui/material"
 import { AccountCircle, ConfirmationNumber } from "@mui/icons-material"
 
-import { IProductInNewOrder } from "../../interfaces";
 import { OrdersContext } from "../../context/orders";
-import { useSearchParams } from "react-router-dom";
 
+import { ResumeDetail } from "./ResumeDetail";
+import { OrderDetailProductItem } from "./OrderDetailProductItem";
 
-interface detailState {
-  clientName : string;
-  number: number;
-}
+import { IOrder } from "../../interfaces";
+import { getDate } from "../../utils";
 
 interface Props {
-  children: React.ReactNode;
-  productsInOrder: IProductInNewOrder[];
-  setproductsInOrder: React.Dispatch<React.SetStateAction<IProductInNewOrder[]>>
+  currentOrder: IOrder;
+  setCurrentOrder: React.Dispatch<React.SetStateAction<IOrder>>
 }
-export const OrderDetail : FC<Props> = ({ children, productsInOrder, setproductsInOrder }) => {
 
+export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
+  
+  const [searchParams] = useSearchParams();
   const { addOrder, getOrderById, updateOrder }  = useContext(OrdersContext);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(()=> {
     if (searchParams.get('id') === null) return;
     const order = getOrderById(Number(searchParams.get('id')));
-    const productsInOrder = order.orderToProduct.map( op=> {
-      return  {
-        id: Number(op.product!.id),
-        title: op.product!.title,
-        price: Number(op.product!.price),
-        description: op.product!.description,
-        stepQuantity: Number(op.product!.stepQuantity),
-        quantity: Number(op.quantity)}
-    });
-    setproductsInOrder(productsInOrder);
-    setNewOrderDetail({
-      clientName: order.clientName,
-      number: order.number
-    })
-
-  },[getOrderById,searchParams,setproductsInOrder]);
-
-
-  const [newOrderDetail, setNewOrderDetail] = useState<detailState>({
-    clientName: '',
-    number: 0,
-  });
-
-  const [response, setResponse] = useState({ok: false, msg: '', open: false});
+    setCurrentOrder(order);
+  },[getOrderById,searchParams,setCurrentOrder]);
 
   const handleInputChange = (e : ChangeEvent<HTMLInputElement>) => {
-    setNewOrderDetail({...newOrderDetail, [e.target.id]: e.target.value});
+    setCurrentOrder({...currentOrder, [e.target.id]: e.target.value});
+  }
+  const handleSwitchChange = (e : ChangeEvent<HTMLInputElement>) => {
+    setCurrentOrder({...currentOrder, state: e.target.checked ? 0 : 1});
   }
 
   const createUptdateOrden = async () => {
-    const products = productsInOrder.map( (p) => {
-      return {
-        productId: p.id,
-        quantity: p.quantity
-      }
-    });
     if (searchParams.get('id') === null) { // create
-      const fecha = new Date();
-      const dia = String(fecha.getDate()).padStart(2, '0'); // Obtiene el día y lo rellena con 0 si es necesario
-      const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // El mes está basado en 0, por lo que sumamos 1
-      const anio = fecha.getFullYear();
       const { ok, msg } = await addOrder({
-        clientName: newOrderDetail.clientName,
-        number: Number(newOrderDetail.number),
-        id: 0,
-        total: productsInOrder.reduce((a,b)=> a + (b.quantity*b.price),0),
-        date: `${anio}-${mes}-${dia}`,
-        state: 0,
-        orderToProduct: products
+        ...currentOrder,
+        date: getDate(),
+        total: currentOrder.products.reduce((a,b)=> a + (b.quantity*b.price),0),
+        id: 0
       });
+      if (ok) {
+        setCurrentOrder({
+          clientName: '',
+          products: [],
+          date: '',
+          id: 0,
+          number: 0,
+          state: 0,
+          total: 0
+        })
+      }
       setResponse({ok, msg, open: true});
     } else { // update
-      const order = getOrderById(Number(searchParams.get('id')));
       const {ok, msg} = await updateOrder({
-        ...order,
-        clientName: newOrderDetail.clientName,
-        number: Number(newOrderDetail.number),
-        total: productsInOrder.reduce((a,b)=> a + (b.quantity*b.price),0),
-        orderToProduct: products
+        ...currentOrder,
+        total: currentOrder.products.reduce((a,b)=> a + (b.quantity*b.price),0),
       });
+      if (ok) {
+        setCurrentOrder({
+          clientName: '',
+          products: [],
+          date: '',
+          id: 0,
+          number: 0,
+          state: 0,
+          total: 0
+        })
+      }
       setResponse({ok, msg, open: true});
     }
   }
 
+  const [response, setResponse] = useState({ok: false, msg: '', open: false});
   const handleCloseSnackbar = () => {
     setResponse({ok: false, msg: '', open: false});
   }
@@ -117,7 +103,7 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder, setproducts
                 size="small"
                 id="clientName"
                 onChange={handleInputChange}
-                value={newOrderDetail.clientName}
+                value={currentOrder.clientName}
                 startAdornment={
                   <InputAdornment position="start">
                     <AccountCircle />
@@ -134,7 +120,7 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder, setproducts
                 size="small"
                 id="number"
                 onChange={handleInputChange}
-                value={newOrderDetail.number}
+                value={currentOrder.number}
                 startAdornment={
                   <InputAdornment position="start">
                     <ConfirmationNumber />
@@ -143,6 +129,19 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder, setproducts
               />
             </FormControl>
           </Grid>
+          <Grid item xs={12}> 
+            <FormControlLabel 
+              control={
+                <Switch 
+                  name="state"
+                  onChange={handleSwitchChange} 
+                  checked={!currentOrder.state} 
+                />
+              } 
+              label="Apartado" 
+            />
+          </Grid>
+          
         </Grid>
 
         <Typography variant='h6' fontWeight='normal' sx={{ my: 2 }}>
@@ -150,54 +149,23 @@ export const OrderDetail : FC<Props> = ({ children, productsInOrder, setproducts
         </Typography>
 
         <Grid container spacing={2}>
-          { children }
+          {
+            currentOrder.products.map((p)=> (
+              <Grid item xs={12} key={p.id}>
+                <OrderDetailProductItem productInOrder={p} setCurrentOrder={setCurrentOrder} />
+              </Grid>
+            ))
+          }
         </Grid>
 
         <Typography variant='h6' fontWeight='normal' sx={{ my: 2 }}>
           Resumen
         </Typography>
 
-        <Grid container sx={{ backgroundColor: '#eaeef7', borderRadius: 1, p: 2 }}>
-          {
-            productsInOrder.map( p=> (
-              <Grid container item xs={12} justifyContent="space-between" key={p.id}>
-                <Grid item>
-                  <Typography variant='body2'>
-                    {p.title}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography variant='body2'>
-                    $ {p.price} x {p.quantity} = $ {p.price * p.quantity} 
-                  </Typography>
-                </Grid>
-              </Grid>
-            ))
-          }
-
-          <Grid item xs={12} sx={{ my: 2 }} >
-            <Divider />
-          </Grid>
-
-          <Grid container item xs={12} justifyContent="space-between">
-            <Grid item>
-              <Typography variant='body2' fontWeight='bold'>
-                Total
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant='body2'>
-                $ {productsInOrder.reduce((a,b)=> a + (b.quantity*b.price),0)}
-              </Typography>
-            </Grid>
-          </Grid>
-
-        </Grid>
-
+        <ResumeDetail products={currentOrder.products}/>
+       
         <Button fullWidth variant="contained" size="large" sx={{ my: 2 }} onClick={createUptdateOrden}>
-          {
-            searchParams.get('id') === null ? 'Agregar orden' : 'Actualizar orden'
-          }
+          { searchParams.get('id') === null ? 'Agregar orden' : 'Actualizar orden' }
         </Button>
 
       </Container>
