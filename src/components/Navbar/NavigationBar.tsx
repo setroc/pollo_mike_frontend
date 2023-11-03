@@ -24,7 +24,9 @@ export const NavigationBar = () => {
               </Link>
             </Button>
             <Button sx={{ color: 'black' }} >
-              Apartados
+              <Link to='/LayawayOrders' style={{ textDecoration: 'none', color: 'inherit' }}>
+                Apartados
+              </Link>
             </Button>
             <Button sx={{ color: 'black' }} >
               <Link to='/CurrentOrders' style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -32,7 +34,9 @@ export const NavigationBar = () => {
               </Link>
             </Button>
             <Button sx={{ color: 'black' }} >
-              Ordenes  anteriores
+              <Link to='/PastOrders' style={{ textDecoration: 'none', color: 'inherit' }}>
+                Ordenes  anteriores
+              </Link>
             </Button>
         </Box>
 

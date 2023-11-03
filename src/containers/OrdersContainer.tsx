@@ -1,12 +1,20 @@
-import { useContext, useState } from 'react';
-import { Alert, Button, ButtonGroup, Grid, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { FC, useContext, useState } from 'react';
+import { Alert, Button, Grid, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 
 import { OrdersContext } from '../context/orders';
 import { useNavigate } from 'react-router-dom';
 
-export const CurrentOrdersContainer = () => {
-  const { orders, deleteOrder } = useContext(OrdersContext);
+interface Props {
+  state: number;
+}
+export const OrdersContainer : FC<Props> = ({state}) => {
+  const { orders, deleteOrder, changeOrderState } = useContext(OrdersContext);
   const navigate = useNavigate();
+
+  const updateState = async (id:number, state: number) => {
+    const { ok, msg } = await changeOrderState(id, state);
+    setResponse({ok, msg, open: true});
+  }
 
   const edit = (id:number) => {
     navigate({
@@ -47,7 +55,7 @@ export const CurrentOrdersContainer = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Turno</TableCell>
+                  <TableCell>{ state === 0 ? 'Hora' : 'Turno' }</TableCell>
                   <TableCell align="right">Nombre del cliente</TableCell>
                   <TableCell align="right">Pedido</TableCell>
                   <TableCell align="right">Acciones</TableCell>
@@ -56,7 +64,7 @@ export const CurrentOrdersContainer = () => {
               <TableBody>
                 {
                   orders.map(o => {
-                      if (o.state === 0) {
+                      if (o.state === state) {
                         return (
                           <TableRow
                             key={o.id}
@@ -75,10 +83,25 @@ export const CurrentOrdersContainer = () => {
       
                             </TableCell>
                             <TableCell align="right">
-                              <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                                <Button onClick={() => edit(o.id)}>Editar</Button>
-                                <Button color='error' onClick={() => remove(o.id)}>Eliminar</Button>
-                              </ButtonGroup>
+                              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                                {
+                                  state === 0 && (
+                                    <>
+                                      <Button variant='contained' color='success' size='large' onClick={() => updateState(o.id, 1)}>Mover</Button>
+                                      <Button variant='contained' size='large' onClick={() => edit(o.id)}>Editar</Button>
+                                    </>
+                                  ) 
+                                }
+                                {
+                                  state === 1 && (
+                                    <>
+                                      <Button variant='contained' color='success' size='large' onClick={() => updateState(o.id, 2)}>Completar</Button>
+                                      <Button variant='contained' size='large' onClick={() => edit(o.id)}>Editar</Button>
+                                    </>
+                                  )
+                                }
+                                <Button variant='contained' color='error' size='large' onClick={() => remove(o.id)}>Eliminar</Button>
+                              </div>
                             </TableCell>
                           </TableRow>
                         )

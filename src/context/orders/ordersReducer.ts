@@ -7,6 +7,7 @@ type OrdersActionType =
   | { type: '[Orders] Update order', payload: IOrder }
   | { type: '[Orders] Delete order', payload: number }
   | { type: '[Orders] Load orders', payload: IOrder[] }
+  | { type: '[Orders] Update order state', payload: IOrder }
 
 export const ordersReducer = (state: OrdersState, action: OrdersActionType) : OrdersState => {
   switch(action.type) {
@@ -20,6 +21,7 @@ export const ordersReducer = (state: OrdersState, action: OrdersActionType) : Or
         ...state,
         orders: [...action.payload]
       }
+    case '[Orders] Update order state':
     case '[Orders] Update order':
       return {
         ...state,
@@ -35,6 +37,7 @@ export const ordersReducer = (state: OrdersState, action: OrdersActionType) : Or
         ...state,
         orders: state.orders.filter(o=>o.id !== action.payload)
       }
+
   }
 
 }

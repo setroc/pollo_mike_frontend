@@ -16,7 +16,7 @@ export const OrderContainer = () => {
     date: '',
     number: 0,
     products: [],
-    state: 0,
+    state: 1,
     total: 0
   });
 
@@ -49,7 +49,14 @@ export const OrderContainer = () => {
         }
       </Grid>
 
-      <Grid item xs={8} sm={6} lg={4}
+      <Grid container item xs={8} sm={6} lg={4}
+        sx={{
+          backgroundColor: '#ffffff',
+          p: 3,
+          overflow: 'auto',
+          height: '100%',
+          mt: 0
+        }}
       >
         <OrderDetail currentOrder={currentOrder} setCurrentOrder={setCurrentOrder} />
       </Grid>

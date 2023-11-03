@@ -20,7 +20,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
   const [state, dispatch] = useReducer( ordersReducer, ORDERS_INITIAL_STATE);
 
   useEffect(()=> {
-    fetch(`http://localhost:3000/api/orders/all?date=${getDate()}&state=0`)
+    fetch(`http://localhost:3000/api/orders/all?date=${getDate()}`)
     .then(res => res.json())
     .then(body => dispatch({ type: '[Orders] Load orders', payload: body}))
   },[])
@@ -96,6 +96,24 @@ export const OrdersProvider : FC<Props> = ({children}) => {
     return state.orders.filter(o=>o.id === id)[0];
   }
 
+  const changeOrderState = async (orderId: number, state: number) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/orders/updateState/${orderId}/${state}`, {method:'PATCH'});
+      if ( res.ok ) {
+        const body : IOrder = await res.json();
+        dispatch({type: '[Orders] Update order state', payload: body});
+        return {ok: true, msg: 'Estado de la orden actualizado correctamente.'}
+      } else {
+        const body = await res.json();
+        console.log(body.message);
+        return {ok: false, msg: 'Error al actualizar el estado de la orden.'}
+      }
+    } catch (error) {
+      console.error(error);
+      return {ok: false, msg: 'Error al actualizar el estado de la orden.'}
+    }
+  }
+
   return (
     <OrdersContext.Provider value={{
       ...state,
@@ -104,7 +122,8 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       getOrderById,
       addOrder,
       updateOrder,
-      deleteOrder
+      deleteOrder,
+      changeOrderState,
     }}>
       {children}
     </OrdersContext.Provider>
