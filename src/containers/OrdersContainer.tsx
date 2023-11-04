@@ -18,7 +18,7 @@ export const OrdersContainer : FC<Props> = ({state}) => {
 
   const edit = (id:number) => {
     navigate({
-      pathname: '/EditOrder',
+      pathname: '/Orders/EditOrder',
       search: `?id=${id}`,
     });
   }
@@ -47,14 +47,15 @@ export const OrdersContainer : FC<Props> = ({state}) => {
         sx={{
           flex: 1,
           overflow: 'hidden',
-          p: 2
+          p: 2,
+          backgroundColor: '#f1f5fe',
         }}
       >
         <Grid item xs={12}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
-                <TableRow>
+                <TableRow sx={{backgroundColor: 'white'}}>
                   <TableCell>{ state === 0 ? 'Hora' : 'Turno' }</TableCell>
                   <TableCell align="right">Nombre del cliente</TableCell>
                   <TableCell align="right">Pedido</TableCell>
@@ -68,7 +69,7 @@ export const OrdersContainer : FC<Props> = ({state}) => {
                         return (
                           <TableRow
                             key={o.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: 'white' }}
                           >
                             <TableCell component="th" scope="row">{o.number}</TableCell>
                             <TableCell align="right">{o.clientName}</TableCell>
