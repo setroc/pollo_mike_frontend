@@ -126,6 +126,7 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
                 id="number"
                 onChange={handleInputChange}
                 value={currentOrder.number}
+                type="number"
                 startAdornment={
                   <InputAdornment position="start">
                     <ConfirmationNumber />

@@ -1,6 +1,61 @@
-import { Box, Container, Divider, Grid, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { ChangeEvent, useContext, useState } from "react";
+import { NumbersRounded } from "@mui/icons-material";
+import { Alert, Container, Fab, InputAdornment, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
+import { ProductsContext } from "../../context/product";
+import { getDate } from "../../utils";
+
+
+interface productsInStock {
+  productId:number,
+  quantity:number
+}
 export const CreateStock = () => {
+  
+  const { products } = useContext(ProductsContext);
+
+  const [stock, setStock] = useState<productsInStock[]>([]);
+  const quantityChange = (e:ChangeEvent<HTMLInputElement>) => {
+    if (!stock.find( s => s.productId === Number(e.target.id))) { // no lo encontro
+      setStock([...stock, { productId: Number(e.target.id), quantity: Number(e.target.value) }]);
+    } else {
+      setStock(stock.map(s => {
+        if (s.productId === Number(e.target.id)) s.quantity = Number(e.target.value);
+        return s;
+      }));
+    }
+  }
+
+  const addStock = async () => {
+    try {
+      if (stock.length === 0) {
+        setResponse({ok: false, msg: 'Debe ingresar cantidades a los productos.', open: true});
+        return;
+      }
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/stock/register`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ date: getDate(), products: stock }),
+      });
+      if (res.ok) {
+        setResponse({ok: true, msg: 'Stock creado correctamente.', open: true});
+        setStock([]);
+      } else {
+        setResponse({ok: false, msg: 'Error al guardar el stock.', open: true});
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const [response, setResponse] = useState({ok: false, msg: '', open: false});
+  const handleCloseSnackbar = () => {
+    setResponse({ok: false, msg: '', open: false});
+  }
+
   return (
     <Container fixed>
       <TableContainer>
@@ -14,22 +69,51 @@ export const CreateStock = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell>Pollo</TableCell>
-              <TableCell>Pollo asado al carbón</TableCell>
-              <TableCell>$ 200</TableCell>
-              <TableCell>
-                <TextField
-                  fullWidth
-                  // Puedes agregar aquí eventos para manejar cambios en el campo de texto
-                />
-              </TableCell>
-            </TableRow>
+            {
+              products.map(p => (
+                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} key={p.id}>
+                  <TableCell>{p.title}</TableCell>
+                  <TableCell>{p.description}</TableCell>
+                  <TableCell>$ {p.price}</TableCell>
+                  <TableCell>
+                    <TextField
+                      fullWidth
+                      size='small'
+                      name={`${p.id}`}
+                      id={`${p.id}`}
+                      onChange={quantityChange}
+                      type="number"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <NumbersRounded />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
+            }
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Fab 
+        variant="extended" 
+        color="primary" 
+        sx={{position: 'absolute', bottom: 40, right: 40}}
+        onClick={addStock}
+      >
+        <AddIcon sx={{ mr: 1}} />
+        Agregar
+      </Fab>
+
+      <Snackbar open={response.open} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} onClose={handleCloseSnackbar}>
+        <Alert severity={response.ok ? 'success' : 'error'} sx={{ width: '100%' }}>
+          {response.msg}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
