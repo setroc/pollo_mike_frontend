@@ -2,6 +2,8 @@ import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Alert, Button, Container, FormControl, FormControlLabel, Grid, InputAdornment, InputLabel, OutlinedInput, Snackbar, Switch, Typography } from "@mui/material"
 import { AccountCircle, ConfirmationNumber } from "@mui/icons-material"
+import { DesktopTimePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
 
 import { OrdersContext } from "../../context/orders";
 
@@ -38,7 +40,7 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
     if (searchParams.get('id') === null) { // create
       const { ok, msg } = await addOrder({
         ...currentOrder,
-        date: getDate(),
+        date: `${getDate()}T${orderHour!.format('HH:mm')}:00`,
         total: currentOrder.products.reduce((a,b)=> a + (b.quantity*b.price),0),
         id: 0
       });
@@ -57,6 +59,7 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
     } else { // update
       const {ok, msg} = await updateOrder({
         ...currentOrder,
+        date: `${getDate()}T${orderHour!.format('HH:mm')}:00`,
         total: currentOrder.products.reduce((a,b)=> a + (b.quantity*b.price),0),
       });
       if (ok) {
@@ -78,6 +81,8 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
   const handleCloseSnackbar = () => {
     setResponse({ok: false, msg: '', open: false});
   }
+
+  const [orderHour, setOrderHour] = useState<Dayjs | null>(dayjs(new Date()));
   
   return (
     <>
@@ -129,7 +134,7 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={12}> 
+          <Grid item xs={12} md={4}> 
             <FormControlLabel 
               control={
                 <Switch 
@@ -141,7 +146,18 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
               label="Apartado" 
             />
           </Grid>
-          
+          {
+            !currentOrder.state && (
+              <Grid item xs={12} md={8}>
+                <DesktopTimePicker
+                  sx={{ width: '100%' }}
+                  value={orderHour}
+                  onChange={(newValue) => setOrderHour(newValue)}
+                  label="Hora"
+                />
+              </Grid>
+            )
+          }
         </Grid>
 
         <Typography variant='h6' fontWeight='normal' sx={{ my: 2 }}>

@@ -3,7 +3,7 @@ import { Box } from "@mui/material"
 
 import { NavigationBar } from "../components"
 
-export const OrderLayout = () => {
+export const GenericLayout = () => {
   return (
     <Box 
       sx={{ 

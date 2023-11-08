@@ -19,7 +19,7 @@ export const ProductsProvider : FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(productsReducer, PRODUCTS_INITIAL_STATE);
 
   useEffect(()=> {
-    fetch(`${import.meta.env.BASE_URL}/api/products/all`)
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/products/all`)
     .then(res => res.json())
     .then(body => dispatch({ type: '[Products] Load all products from api', payload: body}))
   },[])

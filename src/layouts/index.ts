@@ -1,2 +1,2 @@
 export * from './MainLayout';
-export * from './OrderLayout';
+export * from './GenericLayout';

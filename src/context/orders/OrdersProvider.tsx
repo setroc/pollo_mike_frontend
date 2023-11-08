@@ -20,14 +20,14 @@ export const OrdersProvider : FC<Props> = ({children}) => {
   const [state, dispatch] = useReducer( ordersReducer, ORDERS_INITIAL_STATE);
 
   useEffect(()=> {
-    fetch(`${import.meta.env.BASE_URL}/api/orders/all?date=${getDate()}`)
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/orders/all?date=${getDate()}`)
     .then(res => res.json())
     .then(body => dispatch({ type: '[Orders] Load orders', payload: body}))
   },[])
 
   const addOrder = async (order : IOrder) => {
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}/api/orders/register`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/orders/register`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
 
   const updateOrder = async ( order: IOrder) => {
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}/api/orders/edit/${order.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/orders/edit/${order.id}`, {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
 
   const deleteOrder = async (orderId:number) => {
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}/api/orders/delete/${orderId}`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/orders/delete/${orderId}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -98,7 +98,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
 
   const changeOrderState = async (orderId: number, state: number) => {
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}/api/orders/updateState/${orderId}/${state}`, {method:'PATCH'});
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/orders/updateState/${orderId}/${state}`, {method:'PATCH'});
       if ( res.ok ) {
         const body : IOrder = await res.json();
         dispatch({type: '[Orders] Update order state', payload: body});

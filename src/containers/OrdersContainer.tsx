@@ -3,6 +3,7 @@ import { Alert, Button, Grid, Snackbar, Table, TableBody, TableCell, TableContai
 
 import { OrdersContext } from '../context/orders';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 interface Props {
   state: number;
@@ -71,7 +72,7 @@ export const OrdersContainer : FC<Props> = ({state}) => {
                             key={o.id}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: 'white' }}
                           >
-                            <TableCell component="th" scope="row">{o.number}</TableCell>
+                            <TableCell component="th" scope="row">{ state === 0 ? dayjs(o.date.slice(0,-1)).format('LT') : o.number}</TableCell>
                             <TableCell align="right">{o.clientName}</TableCell>
                             <TableCell align="right">
                               {
