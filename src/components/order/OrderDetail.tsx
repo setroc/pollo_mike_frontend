@@ -42,6 +42,7 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
         ...currentOrder,
         date: `${getDate()}T${orderHour!.format('HH:mm')}:00`,
         total: currentOrder.products.reduce((a,b)=> a + (b.quantity*b.price),0),
+        number: Number(currentOrder.number),
         id: 0
       });
       if (ok) {
@@ -61,6 +62,7 @@ export const OrderDetail : FC<Props> = ({ currentOrder, setCurrentOrder }) => {
         ...currentOrder,
         date: `${getDate()}T${orderHour!.format('HH:mm')}:00`,
         total: currentOrder.products.reduce((a,b)=> a + (b.quantity*b.price),0),
+        number: Number(currentOrder.number),
       });
       if (ok) {
         setCurrentOrder({

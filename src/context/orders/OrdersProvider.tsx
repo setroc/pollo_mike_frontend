@@ -41,7 +41,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       } else {
         const body = await res.json();
         console.log(body.message);
-        return {ok: false, msg: 'Error al añadir la orden.'};
+        return {ok: false, msg: body.message};
       }
     } catch ( error ) {
       console.error(error);
@@ -65,7 +65,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       } else {
         const body = await res.json();
         console.log(body.message);
-        return {ok: false, msg: 'Error al actualizar la orden.'};
+        return {ok: false, msg: body.message};
       }
     } catch ( error ) {
       console.error(error);
@@ -84,7 +84,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       } else {
         const body = await res.json();
         console.log(body.message);
-        return {ok: false, msg: 'Error al eliminar la orden.'};
+        return {ok: false, msg: body.message};
       }
     } catch ( error ) {
       console.error(error);
@@ -106,7 +106,7 @@ export const OrdersProvider : FC<Props> = ({children}) => {
       } else {
         const body = await res.json();
         console.log(body.message);
-        return {ok: false, msg: 'Error al actualizar el estado de la orden.'}
+        return {ok: false, msg: body.message}
       }
     } catch (error) {
       console.error(error);
